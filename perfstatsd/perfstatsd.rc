@@ -5,3 +5,4 @@ service vendor.perfstatsd /vendor/bin/perfstatsd -s
     priority 10
     user root
     group system readproc
+    task_profiles ServiceCapacityLow
