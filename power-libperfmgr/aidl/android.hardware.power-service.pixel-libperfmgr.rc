@@ -3,6 +3,7 @@ service vendor.power-hal-aidl /vendor/bin/hw/android.hardware.power-service.pixe
     user root
     group system
     priority -20
+    task_profiles ServiceCapacityLow
 
 on late-fs
      start vendor.power-hal-aidl
