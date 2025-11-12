@@ -16,3 +16,4 @@ service vendor.power.stats /vendor/bin/hw/android.hardware.power.stats-service.p
     class hal
     user system
     group system
+    task_profiles ServiceCapacityLow
