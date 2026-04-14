@@ -153,6 +153,9 @@ class PowerSessionManager : public Immobile {
 
     std::vector<SessionMetrics> mCollectedSessionMetrics GUARDED_BY(mSessionTaskMapMutex);
     const int32_t kMaxNumOfCachedSessionMetrics;
+
+    std::unordered_map<pid_t, UclampRange> mLastAppliedUclamp
+            GUARDED_BY(mSessionTaskMapMutex);
 };
 
 }  // namespace pixel

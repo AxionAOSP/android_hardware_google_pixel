@@ -37,6 +37,11 @@ namespace pixel {
 struct UclampRange {
     int uclampMin{kUclampMin};
     int uclampMax{kUclampMax};
+
+    bool operator==(const UclampRange &o) const {
+        return uclampMin == o.uclampMin && uclampMax == o.uclampMax;
+    }
+    bool operator!=(const UclampRange &o) const { return !(*this == o); }
 };
 
 // --------------------------------------------------------

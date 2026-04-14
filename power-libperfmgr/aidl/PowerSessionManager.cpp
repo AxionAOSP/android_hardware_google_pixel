@@ -526,6 +526,11 @@ void PowerSessionManager<HintManagerT>::applyUclampLocked(
                 mSessionTaskMap.getTaskVoteRange(*tidIter, timePoint, uclampRange,
                                                  config->mUclampMaxEfficientBase,
                                                  config->mUclampMaxEfficientOffset);
+                auto lastIt = mLastAppliedUclamp.find(*tidIter);
+                if (lastIt != mLastAppliedUclamp.end() && lastIt->second == uclampRange) {
+                    tidIter++;
+                    continue;
+                }
                 int stat = set_uclamp(*tidIter, uclampRange);
                 if (stat == ESRCH) {
                     ALOGV("Removing dead thread %d from hint session %s.", *tidIter,
@@ -533,8 +538,12 @@ void PowerSessionManager<HintManagerT>::applyUclampLocked(
                     if (mSessionTaskMap.removeDeadTaskSessionMap(sessionId, *tidIter)) {
                         ALOGV("Removed dead thread-session map.");
                     }
+                    mLastAppliedUclamp.erase(*tidIter);
                     tidIter = threadList.erase(tidIter);
                 } else {
+                    if (stat == 0) {
+                        mLastAppliedUclamp[*tidIter] = uclampRange;
+                    }
                     tidIter++;
                 }
             }
