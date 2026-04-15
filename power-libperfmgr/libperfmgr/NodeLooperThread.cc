@@ -42,9 +42,6 @@ bool NodeLooperThread::Request(const std::vector<NodeAction>& actions,
         LOG(WARNING) << "NodeLooperThread is exiting";
         return false;
     }
-    if (!::android::Thread::isRunning()) {
-        LOG(WARNING) << "NodeLooperThread is not running, request " << hint_type;
-    }
 
     Job *job = jobmgr_.getFreeJob();
     job->is_cancel = false;
@@ -69,9 +66,6 @@ bool NodeLooperThread::Cancel(const std::vector<NodeAction>& actions,
     if (::android::Thread::exitPending()) {
         LOG(WARNING) << "NodeLooperThread is exiting";
         return false;
-    }
-    if (!::android::Thread::isRunning()) {
-        LOG(WARNING) << "NodeLooperThread is not running, cancel " << hint_type;
     }
 
     Job *job = jobmgr_.getFreeJob();
