@@ -55,11 +55,19 @@ std::chrono::milliseconds FileNode::Update(bool log_error) {
         }
     }
 
-    // Update node only if request index changes
-    if (value_index != current_val_index_ || reset_on_init_) {
-        const std::string& req_value =
-            req_sorted_[value_index].GetRequestValue();
+    std::string req_value = req_sorted_[value_index].GetRequestValue();
+    if (max_ceiling_ > 0 || min_floor_ > 0) {
+        char *end = nullptr;
+        long long val = strtoll(req_value.c_str(), &end, 10);
+        if (end != req_value.c_str() && *end == '\0') {
+            if (max_ceiling_ > 0 && val > max_ceiling_) val = max_ceiling_;
+            if (min_floor_ > 0 && val < min_floor_) val = min_floor_;
+            req_value = std::to_string(val);
+        }
+    }
 
+    // Update node only if request index changes
+    if (value_index != current_val_index_ || reset_on_init_ || req_value != last_written_value_) {
         if (ATRACE_ENABLED()) {
             ATRACE_INT(("N:" + GetName()).c_str(), value_index);
             const std::string tag =
@@ -111,6 +119,7 @@ std::chrono::milliseconds FileNode::Update(bool log_error) {
             // Update current index only when succeed
             current_val_index_ = value_index;
             reset_on_init_ = false;
+            last_written_value_ = req_value;
         }
 
         if (ATRACE_ENABLED()) {

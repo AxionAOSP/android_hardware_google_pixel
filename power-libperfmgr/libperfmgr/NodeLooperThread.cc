@@ -19,6 +19,7 @@
 
 #include "perfmgr/NodeLooperThread.h"
 
+#include <climits>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/properties.h>
@@ -200,6 +201,52 @@ void NodeLooperThread::Stop() {
         ::android::Thread::join();
         LOG(INFO) << "NodeLooperThread stopped";
     }
+}
+
+static std::string resolveCanonical(const std::string& path) {
+    char resolved[PATH_MAX];
+    return realpath(path.c_str(), resolved) ? resolved : path;
+}
+
+static bool nodeMatchesPath(const std::unique_ptr<Node>& node, const std::string& target_path, const std::string& canonical_target) {
+    for (const auto& p : node->GetPaths()) {
+        if (p == target_path || resolveCanonical(p) == canonical_target) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool NodeLooperThread::SetNodeCeiling(const std::string& node_path, long long max_ceiling, long long min_floor) {
+    ::android::AutoMutex _l(lock_);
+    bool found = false;
+    std::string canonical_target = resolveCanonical(node_path);
+
+    for (auto& node : nodes_) {
+        if (nodeMatchesPath(node, node_path, canonical_target)) {
+            node->SetCeiling(max_ceiling, min_floor);
+            node->Update(true);
+            found = true;
+        }
+    }
+    wake_cond_.signal();
+    return found;
+}
+
+bool NodeLooperThread::ClearNodeCeiling(const std::string& node_path) {
+    ::android::AutoMutex _l(lock_);
+    bool found = false;
+    std::string canonical_target = resolveCanonical(node_path);
+
+    for (auto& node : nodes_) {
+        if (nodeMatchesPath(node, node_path, canonical_target)) {
+            node->ClearCeiling();
+            node->Update(true);
+            found = true;
+        }
+    }
+    wake_cond_.signal();
+    return found;
 }
 
 }  // namespace perfmgr

@@ -87,6 +87,9 @@ class NodeLooperThread : public ::android::Thread {
     bool Cancel(const std::vector<NodeAction>& actions,
                 const std::string& hint_type);
 
+    bool SetNodeCeiling(const std::string& node_path, long long max_ceiling, long long min_floor);
+    bool ClearNodeCeiling(const std::string& node_path);
+
     // Dump all nodes to fd
     void DumpToFd(int fd);
 

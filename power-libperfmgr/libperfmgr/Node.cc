@@ -92,5 +92,29 @@ std::vector<std::string> Node::GetValues() const {
     return values;
 }
 
+void Node::SetCeiling(long long max_ceiling, long long min_floor) {
+    max_ceiling_ = max_ceiling;
+    min_floor_ = min_floor;
+    reset_on_init_ = true;
+}
+
+void Node::ClearCeiling() {
+    max_ceiling_ = 0;
+    min_floor_ = 0;
+    reset_on_init_ = true;
+}
+
+bool Node::HasCeiling() const {
+    return max_ceiling_ > 0 || min_floor_ > 0;
+}
+
+long long Node::GetMaxCeiling() const {
+    return max_ceiling_;
+}
+
+long long Node::GetMinFloor() const {
+    return min_floor_;
+}
+
 }  // namespace perfmgr
 }  // namespace android

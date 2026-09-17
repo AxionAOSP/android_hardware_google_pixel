@@ -1176,5 +1176,19 @@ OtherConfigs HintManager::GetOtherConfigs() const {
     return other_configs_;
 }
 
+bool HintManager::SetNodeCeiling(const std::string &node_path, long long max_ceiling, long long min_floor) {
+    if (nm_.get() == nullptr) {
+        return false;
+    }
+    return nm_->SetNodeCeiling(node_path, max_ceiling, min_floor);
+}
+
+bool HintManager::ClearNodeCeiling(const std::string &node_path) {
+    if (nm_.get() == nullptr) {
+        return false;
+    }
+    return nm_->ClearNodeCeiling(node_path);
+}
+
 }  // namespace perfmgr
 }  // namespace android

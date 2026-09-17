@@ -54,6 +54,7 @@ class FileNode : public Node {
     const std::chrono::milliseconds warn_timeout_;
     android::base::unique_fd fd_;
     bool allow_failure_;
+    std::string last_written_value_;
 };
 
 }  // namespace perfmgr

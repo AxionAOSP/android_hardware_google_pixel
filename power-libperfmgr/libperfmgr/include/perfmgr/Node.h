@@ -67,6 +67,11 @@ class Node {
     std::size_t GetDefaultIndex() const;
     bool GetResetOnInit() const;
     bool GetValueIndex(const std::string& value, std::size_t* index) const;
+    void SetCeiling(long long max_ceiling, long long min_floor);
+    void ClearCeiling();
+    bool HasCeiling() const;
+    long long GetMaxCeiling() const;
+    long long GetMinFloor() const;
     virtual void DumpToFd(int fd) const = 0;
 
   protected:
@@ -82,6 +87,8 @@ class Node {
     const std::size_t default_val_index_;
     // node will be explicitly initialized when first time called Update().
     bool reset_on_init_;
+    long long max_ceiling_{0};
+    long long min_floor_{0};
     std::size_t current_val_index_;
 };
 

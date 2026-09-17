@@ -142,6 +142,9 @@ class HintManager {
     // Query if given hint enabled.
     bool IsHintEnabled(const std::string &hint_type) const;
 
+    bool SetNodeCeiling(const std::string &node_path, long long max_ceiling, long long min_floor);
+    bool ClearNodeCeiling(const std::string &node_path);
+
     // TODO(jimmyshiu@): Need to be removed once all powerhint.json up-to-date.
     bool SetAdpfProfileFromDoHint(const std::string &profile_name);
     std::shared_ptr<AdpfConfig> GetAdpfProfileFromDoHint() const;
